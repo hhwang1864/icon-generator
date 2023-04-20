@@ -7,15 +7,21 @@ import { api } from "~/utils/api";
 import { Input } from "~/component/Input";
 import { FormGroup } from "~/component/FormGroup";
 import React, { useState } from "react";
+import { Button } from "~/component/Button";
+import Image from "next/image";
 
 const GeneratePage: NextPage = () => {
   const [form, setForm] = useState({
     prompt: ""
   });
 
+  const [imageUrl, setImageUrl] = useState('')
+
   const generateIcon = api.generate.generateIcon.useMutation({
     onSuccess(data) {
-      console.log('mutation finished', data)
+      console.log('mutation finished', data.imageUrl)
+      if (!data.imageUrl) return
+      setImageUrl(data.imageUrl)
     }
   })
 
@@ -25,6 +31,7 @@ const GeneratePage: NextPage = () => {
     generateIcon.mutate({
       prompt: form.prompt
     })
+    setForm( {prompt: ""})
   }
 
 
@@ -37,6 +44,10 @@ const GeneratePage: NextPage = () => {
       }))
     }
   }
+
+  const session = useSession()
+
+  const isLoggedIn = !!session.data
   return (
     <>
       <Head>
@@ -45,6 +56,26 @@ const GeneratePage: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-center">
+
+        {!isLoggedIn && (
+          <Button
+            onClick={ () => {
+              signIn().catch(console.error)
+            }}
+            >
+              Login
+          </Button>
+        )}
+        {isLoggedIn && (
+          <Button
+            onClick={ () => {
+              signOut().catch(console.error)
+            }}
+          >
+            Logout
+          </Button>
+        )}
+
         <form className="flex flex-col gap-4"
           onSubmit={handleFormSubmit}
         >
@@ -57,6 +88,13 @@ const GeneratePage: NextPage = () => {
           </FormGroup>
           <button className="bg-blue-400 hover:bg-blue-500 px-4 py-2 rounded">Submit</button>
         </form>
+
+        <Image
+          src={`data:image/png;base64, ${imageUrl}`}
+          alt=" an image of your generated prompt"
+          width="100"
+          height="100"
+        />
       </main>
     </>
   );
