@@ -9,7 +9,10 @@ const config = {
   reactStrictMode: true,
 
   images: {
-    domains: ["oaidalleapiprodscus.blob.core.windows.net"]
+    domains: [
+      "oaidalleapiprodscus.blob.core.windows.net",
+      "hojin-icon-generator.s3.ap-southeast-2.amazonaws.com"
+    ]
   },
 
   /**

@@ -21,7 +21,7 @@ const s3 = new AWS.S3({
 
 })
 
-
+const BUCKET_NAME = "hojin-icon-generator"
 const configuration = new Configuration({
   apiKey: env.DALLE_API_KEY
 });
@@ -86,7 +86,7 @@ export const generateRouter = createTRPCRouter({
       // Buffer is temporary placeholder (variables in many programming languages) in memory (ram/disk) on which data can be dumped and then processing can be done.
       await s3
       .putObject({
-        Bucket: 'hojin-icon-generator',
+        Bucket: BUCKET_NAME,
         Body: Buffer.from(b64EncodedImage!, "base64" ),
         Key: icon.id, //TODO: generate a random ID
         ContentEncoding: "base64",
@@ -94,7 +94,7 @@ export const generateRouter = createTRPCRouter({
       }).promise()
 
     return {
-        imageUrl: b64EncodedImage
+        imageUrl: `https://${BUCKET_NAME}.s3.ap-southeast-2.amazonaws.com/${icon.id}`
       }
     })
 });
