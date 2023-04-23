@@ -9,7 +9,7 @@ const Homepage: NextPage = () => {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
 
   function HeroBanner() {
-    return <section className="mt-24 mb-24 sm:mt-24 grid grid-cols-1 gap-12 px-8 sm:grid-cols-2">
+    return <section className="mt-12 mb-24 grid grid-col-2 gap-12 px-8 sm:mt-24 sm:grid-cols-2">
       <div className="flex flex-col gap-4">
         <h1 className="text-6xl">Generate icon with click of a button</h1>
         <p className="text-2xl">

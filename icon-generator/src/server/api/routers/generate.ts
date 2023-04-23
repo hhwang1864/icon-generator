@@ -49,6 +49,7 @@ export const generateRouter = createTRPCRouter({
     .input(
       z.object({
         prompt: z.string(),
+        color: z.string()
       })
      )
 
@@ -73,8 +74,8 @@ export const generateRouter = createTRPCRouter({
           message: "you do not have enough credits"
         })
       }
-
-      const b64EncodedImage = await generateIcon(input.prompt)
+      const finalPrompt = `a modern icon in ${input.color} of a ${input.prompt}, pixel style minialistic, dark background`
+      const b64EncodedImage = await generateIcon(finalPrompt)
 
       const icon = await ctx.prisma.icon.create({
         data: {
