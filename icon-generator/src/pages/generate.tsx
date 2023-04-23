@@ -1,53 +1,46 @@
+/* eslint-disable @next/next/no-img-element */
+/* eslint-disable jsx-a11y/alt-text */
 import { type NextPage } from "next";
 import Head from "next/head";
-
-import { signIn, signOut, useSession } from "next-auth/react";
-
-import { api } from "~/utils/api";
-import { Input } from "~/component/Input";
-import { FormGroup } from "~/component/FormGroup";
-import React, { useState } from "react";
-import { Button } from "~/component/Button";
 import Image from "next/image";
+import { useState } from "react";
+import { Button } from "~/component/Button";
+import { FormGroup } from "~/component/FormGroup";
+import { Input } from "~/component/Input";
+import { api } from "~/utils/api";
 
 const GeneratePage: NextPage = () => {
-  const [form, setForm] = useState({
-    prompt: ""
-  });
 
-  const [imageUrl, setImageUrl] = useState('')
+  const [form, setForm] = useState({
+    prompt: "",
+  });
+  const [imageUrl, setImageUrl] = useState("");
 
   const generateIcon = api.generate.generateIcon.useMutation({
     onSuccess(data) {
-      console.log('mutation finished', data.imageUrl)
-      if (!data.imageUrl) return
-      setImageUrl(data.imageUrl)
-    }
-  })
+      if (!data.imageUrl) return;
+      setImageUrl(data.imageUrl);
+    },
+  });
 
   function handleFormSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    // TODO: submit the form data to the backend
+    e.preventDefault();
     generateIcon.mutate({
-      prompt: form.prompt
-    })
-    setForm( {prompt: ""})
+      prompt: form.prompt,
+    });
+    setForm({ prompt: "" });
   }
 
-
-
-  function updateForm(key:string){
+  function updateForm(key: string) {
     return function (e: React.ChangeEvent<HTMLInputElement>) {
-      setForm((prev) =>({
+      setForm((prev) => ({
         ...prev,
-        [key]: e.target.value
-      }))
-    }
+        [key]: e.target.value,
+      }));
+    };
   }
 
-  const session = useSession()
 
-  const isLoggedIn = !!session.data
   return (
     <>
       <Head>
@@ -57,41 +50,19 @@ const GeneratePage: NextPage = () => {
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-center">
 
-        {!isLoggedIn && (
-          <Button
-            onClick={ () => {
-              signIn().catch(console.error)
-            }}
-            >
-              Login
-          </Button>
-        )}
-        {isLoggedIn && (
-          <Button
-            onClick={ () => {
-              signOut().catch(console.error)
-            }}
-          >
-            Logout
-          </Button>
-        )}
-
-        <form className="flex flex-col gap-4"
-          onSubmit={handleFormSubmit}
-        >
+        <form className="flex flex-col gap-4" onSubmit={handleFormSubmit}>
           <FormGroup>
-          <label>Prompt</label>
-          <Input
-            value={form.prompt}
-            onChange= {updateForm("prompt")}>
-          </Input>
+            <label>Prompt</label>
+            <Input value={form.prompt} onChange={updateForm("prompt")}></Input>
           </FormGroup>
-          <button className="bg-blue-400 hover:bg-blue-500 px-4 py-2 rounded">Submit</button>
+          <Button className="rounded bg-blue-400 px-4 py-2 hover:bg-blue-500">
+            Submit
+          </Button>
         </form>
 
         <Image
-          src= {imageUrl}
-          alt=" an image of your generated prompt"
+          src={imageUrl}
+          alt="an image"
           width="100"
           height="100"
         />
@@ -100,8 +71,4 @@ const GeneratePage: NextPage = () => {
   );
 };
 
-export default GeneratePage
-
-
-
-
+export default GeneratePage;
