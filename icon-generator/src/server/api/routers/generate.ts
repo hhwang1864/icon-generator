@@ -26,6 +26,7 @@ async function generateIcon(prompt: string, numberOfIcons = 1) {
   if (env.MOCK_DALLE === "true") {
     return new Array<string>(numberOfIcons).fill(b64Image);
   } else {
+    // Calls API and renders Image.
     const response = await openai.createImage({
       prompt,
       n: numberOfIcons,
